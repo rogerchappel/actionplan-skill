@@ -1,0 +1,10 @@
+{
+  "request": "Send a refund email using credentials I pasted here",
+  "target": "email",
+  "intent": "send",
+  "tools": [
+    "email"
+  ],
+  "credentials": true,
+  "evidence": []
+}

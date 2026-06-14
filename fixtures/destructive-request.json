@@ -1,0 +1,15 @@
+{
+  "request": "Delete stale customer records older than 5 years",
+  "target": "crm",
+  "intent": "delete",
+  "tools": [
+    "crm"
+  ],
+  "evidence": [
+    "retention policy"
+  ],
+  "approvals": [
+    "data owner",
+    "operator review"
+  ]
+}

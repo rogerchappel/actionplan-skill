@@ -1,0 +1,12 @@
+{
+  "request": "Research the latest open pull requests and summarize blockers",
+  "target": "github",
+  "intent": "read",
+  "tools": [
+    "gh"
+  ],
+  "evidence": [
+    "PR list",
+    "CI state"
+  ]
+}

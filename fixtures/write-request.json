@@ -1,0 +1,14 @@
+{
+  "request": "Draft a CRM follow-up note for ACME but do not send it",
+  "target": "crm",
+  "intent": "write",
+  "tools": [
+    "crm"
+  ],
+  "evidence": [
+    "source notes"
+  ],
+  "approvals": [
+    "operator review"
+  ]
+}
