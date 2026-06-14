@@ -1,0 +1,23 @@
+{
+  "name": "actionplan-skill",
+  "version": "0.1.0",
+  "description": "Dry-run action planning skill for agent side-effect review.",
+  "type": "module",
+  "bin": {
+    "actionplan-skill": "bin/actionplan-skill.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node scripts/check.js",
+    "build": "node scripts/build.js",
+    "smoke": "node bin/actionplan-skill.js fixtures/write-request.json --format markdown"
+  },
+  "keywords": [
+    "agent-skill",
+    "dry-run",
+    "cli",
+    "local-first"
+  ],
+  "author": "Roger Chappel",
+  "license": "MIT"
+}
