@@ -25,3 +25,17 @@ Pending PR body should record:
 - Deterministic heuristics only.
 - No connector execution.
 - No package publishing in this release candidate.
+
+## Verification Results
+
+- `npm test` PASS, 1 fixture-backed test.
+- `npm run check` PASS, required docs and SKILL.md sections present.
+- `npm run build` PASS, dist smoke completed.
+- `npm run smoke` PASS, rendered write-request dry-run plan.
+
+## Commit Groups
+
+- Project scaffold and metadata.
+- Product, orchestration, skill, and release docs.
+- Fixtures, engine, renderer, CLI, and tests.
+- Check, build, validation, README, and license.
