@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
+import pkg from '../package.json' with { type: 'json' };
 import { planAction } from '../src/index.js';
 import { renderMarkdown } from '../src/render.js';
 
@@ -8,8 +9,12 @@ const file = args[0];
 const formatIndex = args.indexOf('--format');
 const format = formatIndex >= 0 ? args[formatIndex + 1] : 'markdown';
 
+if (args.includes('--version')) {
+  console.log(pkg.version);
+  process.exit(0);
+}
 if (!file || args.includes('--help')) {
-  console.log('Usage: actionplan-skill <input.json> [--format markdown|json]');
+  console.log('Usage: actionplan-skill <input.json> [--format markdown|json] [--version]');
   process.exit(file ? 0 : 1);
 }
 if (!['markdown', 'json'].includes(format)) {
