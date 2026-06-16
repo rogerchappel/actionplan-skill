@@ -36,6 +36,8 @@
     "fixtures",
     "docs",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "SECURITY.md",
+    "CONTRIBUTING.md"
   ]
 }
