@@ -3,14 +3,6 @@
   "version": "0.1.0",
   "description": "Dry-run action planning skill for agent side-effect review.",
   "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rogerchappel/actionplan-skill.git"
-  },
-  "bugs": {
-    "url": "https://github.com/rogerchappel/actionplan-skill/issues"
-  },
-  "homepage": "https://github.com/rogerchappel/actionplan-skill#readme",
   "bin": {
     "actionplan-skill": "bin/actionplan-skill.js"
   },
@@ -20,13 +12,18 @@
     "docs",
     "fixtures",
     "SKILL.md",
-    "README.md"
+    "README.md",
+    "LICENSE",
+    "SECURITY.md",
+    "CONTRIBUTING.md"
   ],
   "scripts": {
     "test": "node --test",
     "check": "node scripts/check.js",
     "build": "node scripts/build.js",
-    "smoke": "node bin/actionplan-skill.js fixtures/write-request.json --format markdown"
+    "smoke": "node bin/actionplan-skill.js fixtures/write-request.json --format markdown",
+    "package:smoke": "npm pack --dry-run",
+    "release:check": "npm run check && npm run test && npm run build && npm run smoke && npm run package:smoke"
   },
   "keywords": [
     "agent-skill",
@@ -35,5 +32,13 @@
     "local-first"
   ],
   "author": "Roger Chappel",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rogerchappel/actionplan-skill.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rogerchappel/actionplan-skill/issues"
+  },
+  "homepage": "https://github.com/rogerchappel/actionplan-skill#readme"
 }
