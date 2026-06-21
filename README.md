@@ -8,8 +8,7 @@ Actionplan Skill is a local-first agent skill package that converts a requested 
 
 ```bash
 npm install
-npm test
-npm run smoke
+npm run release:check
 node bin/actionplan-skill.js fixtures/write-request.json --format markdown
 ```
 
@@ -32,6 +31,10 @@ Import from `src/index.js` for tests or agent wrappers. The public functions are
 - No network calls.
 - No credential handling.
 - Any external action must happen in a separate, explicitly approved workflow.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development expectations and [SECURITY.md](SECURITY.md) for vulnerability reporting and data handling guidance.
 
 ## Limitations
 
