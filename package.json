@@ -23,7 +23,7 @@
     "check": "node scripts/check.js",
     "build": "node scripts/build.js",
     "smoke": "node bin/actionplan-skill.js fixtures/write-request.json --format markdown",
-    "package:smoke": "npm pack --dry-run",
+    "package:smoke": "node scripts/package-smoke.mjs",
     "release:check": "npm run check && npm run test && npm run build && npm run smoke && npm run package:smoke"
   },
   "keywords": [
