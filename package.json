@@ -24,7 +24,8 @@
     "build": "node scripts/build.js",
     "smoke": "node bin/actionplan-skill.js fixtures/write-request.json --format markdown",
     "package:smoke": "node scripts/package-smoke.mjs",
-    "release:check": "npm run check && npm run test && npm run build && npm run smoke && npm run package:smoke"
+    "release:check": "npm run check && npm run test && npm run build && npm run smoke && npm run package:smoke",
+    "lint": "npm run check"
   },
   "keywords": [
     "agent-skill",
@@ -41,5 +42,8 @@
   "bugs": {
     "url": "https://github.com/rogerchappel/actionplan-skill/issues"
   },
-  "homepage": "https://github.com/rogerchappel/actionplan-skill#readme"
+  "homepage": "https://github.com/rogerchappel/actionplan-skill#readme",
+  "engines": {
+    "node": ">=18"
+  }
 }
