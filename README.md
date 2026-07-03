@@ -39,6 +39,7 @@ failure:
 
 ```bash
 npm run check
+npm run lint
 npm test
 npm run build
 npm run smoke
