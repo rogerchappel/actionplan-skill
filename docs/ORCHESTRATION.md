@@ -11,8 +11,8 @@
 ## Failure Modes
 
 - Invalid JSON exits non-zero with a concise parse error.
-- Unsupported format exits non-zero.
-- Missing input file exits non-zero through Node file handling.
+- Unknown or duplicate options, missing option values, extra input files, and unsupported formats exit non-zero with concise diagnostics.
+- Missing input files and invalid decoded input shapes exit non-zero without stack traces.
 
 ## Evidence
 
