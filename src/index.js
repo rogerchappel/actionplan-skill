@@ -5,6 +5,29 @@ const APPROVALS = {
   blocked: 'blocked'
 };
 
+const STRING_FIELDS = ['request', 'intent', 'target'];
+const STRING_ARRAY_FIELDS = ['tools', 'evidence', 'approvals'];
+
+function validateActionInput(input) {
+  if (input === null || Array.isArray(input) || typeof input !== 'object') {
+    throw new TypeError('input must be a JSON object');
+  }
+  for (const field of STRING_FIELDS) {
+    if (field in input && typeof input[field] !== 'string') {
+      throw new TypeError(field + ' must be a string');
+    }
+  }
+  for (const field of STRING_ARRAY_FIELDS) {
+    if (field in input && (!Array.isArray(input[field]) || input[field].some((value) => typeof value !== 'string'))) {
+      throw new TypeError(field + ' must be an array of strings');
+    }
+  }
+  if ('credentials' in input && typeof input.credentials !== 'boolean') {
+    throw new TypeError('credentials must be a boolean');
+  }
+  return input;
+}
+
 function classifyIntent(input) {
   const text = [input.request, input.intent, input.target].filter(Boolean).join(' ').toLowerCase();
   if (input.credentials || /password|secret|token|credential/.test(text)) return 'blocked';
@@ -14,6 +37,7 @@ function classifyIntent(input) {
 }
 
 function planAction(input) {
+  validateActionInput(input);
   const actionClass = classifyIntent(input);
   const tools = Array.isArray(input.tools) && input.tools.length ? input.tools : [input.target || 'local'];
   const blocked = actionClass === 'blocked';
@@ -30,4 +54,4 @@ function planAction(input) {
   return { title: input.request || 'Untitled action request', actionClass, approval: APPROVALS[actionClass], tools, evidence: Array.isArray(input.evidence) ? input.evidence : [], reversible: actionClass === 'readonly' || actionClass === 'write', blocked, stopConditions: blocked ? ['credentials-present', 'unsafe-external-write'] : ['missing-approval', 'missing-evidence', 'scope-change'], steps };
 }
 
-export { classifyIntent, planAction };
+export { classifyIntent, planAction, validateActionInput };
