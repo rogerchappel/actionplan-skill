@@ -17,9 +17,15 @@ node bin/actionplan-skill.js fixtures/write-request.json --format markdown
 ```bash
 node bin/actionplan-skill.js fixtures/write-request.json --format markdown
 node bin/actionplan-skill.js fixtures/write-request.json --format json
+node bin/actionplan-skill.js --help
+node bin/actionplan-skill.js --version
 ```
 
 The CLI reads action request JSON and prints a dry-run action plan. It never calls external services, writes to third-party systems, or reads credentials.
+It accepts exactly one input file and at most one `--format` option. Input fields
+`request`, `intent`, and `target` must be strings; `tools`, `evidence`, and
+`approvals` must be arrays of strings; and `credentials`, when present, must be
+a boolean.
 
 ## Library
 
