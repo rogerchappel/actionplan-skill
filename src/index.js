@@ -7,6 +7,11 @@ const APPROVALS = {
 
 const STRING_FIELDS = ['request', 'intent', 'target'];
 const STRING_ARRAY_FIELDS = ['tools', 'evidence', 'approvals'];
+const BLOCKED_TERMS = new Set(['password', 'secret', 'token', 'credential', 'credentials']);
+const DESTRUCTIVE_TERMS = new Set(['delete', 'destroy', 'remove', 'wipe', 'refund', 'charge']);
+const WRITE_TERMS = new Set(['send', 'post', 'update', 'create', 'write', 'draft', 'comment']);
+const NEGATIONS = new Set(['no', 'not', 'never', 'without']);
+const CLAUSE_BOUNDARIES = new Set([',', '.', ';', ':', '!', '?', 'but', 'however', 'instead', 'then']);
 
 function validateActionInput(input) {
   if (input === null || Array.isArray(input) || typeof input !== 'object') {
@@ -29,10 +34,27 @@ function validateActionInput(input) {
 }
 
 function classifyIntent(input) {
-  const text = [input.request, input.intent, input.target].filter(Boolean).join(' ').toLowerCase();
-  if (input.credentials || /password|secret|token|credential/.test(text)) return 'blocked';
-  if (/delete|destroy|remove|wipe|refund|charge/.test(text)) return 'destructive';
-  if (/send|post|update|create|write|draft|comment/.test(text)) return 'write';
+  const text = [input.request, input.intent, input.target].filter(Boolean).join(' ').toLowerCase()
+    .replace(/\b(can|could|did|do|does|is|should|was|were|would)n['’]t\b/g, '$1 not')
+    .replace(/\bwon['’]t\b/g, 'will not');
+  const tokens = text.match(/[\p{L}\p{N}_]+|[,.;:!?]/gu) || [];
+
+  if (input.credentials || tokens.some((token) => BLOCKED_TERMS.has(token))) return 'blocked';
+
+  let negated = false;
+  let actionClass = 'readonly';
+  for (const token of tokens) {
+    if (CLAUSE_BOUNDARIES.has(token)) {
+      negated = false;
+    } else if (NEGATIONS.has(token)) {
+      negated = true;
+    } else if (!negated && DESTRUCTIVE_TERMS.has(token)) {
+      return 'destructive';
+    } else if (!negated && WRITE_TERMS.has(token)) {
+      actionClass = 'write';
+    }
+  }
+  if (actionClass === 'write') return 'write';
   return 'readonly';
 }
 
