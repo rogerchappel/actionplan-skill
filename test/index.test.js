@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { test } from 'node:test';
-import { planAction } from '../src/index.js';
+import { classifyIntent, planAction } from '../src/index.js';
 
 function load(name) { return JSON.parse(fs.readFileSync(path.join('fixtures', name), 'utf8')); }
 
@@ -17,6 +17,20 @@ test('actionplan-skill produces stable fixture output', () => {
   const blockedPlan = planAction(load('blocked-request.json'));
   assert.equal(blockedPlan.blocked, true);
   assert.ok(blockedPlan.stopConditions.includes('credentials-present'));
+});
+
+test('intent classification uses whole tokens and respects explicit negation', () => {
+  const cases = [
+    [{ request: 'Ask the secretary for the agenda' }, 'readonly'],
+    [{ request: 'Postpone the meeting' }, 'readonly'],
+    [{ request: 'Do not delete the saved draft' }, 'readonly'],
+    [{ request: 'Never post the private update' }, 'readonly'],
+    [{ request: 'Do not delete the draft; send the approved version' }, 'write'],
+    [{ request: 'Send the note without a password', credentials: true }, 'blocked']
+  ];
+  for (const [input, expected] of cases) {
+    assert.equal(classifyIntent(input), expected, input.request);
+  }
 });
 
 function runCli(args) {
@@ -41,6 +55,20 @@ test('cli preserves help, version, Markdown, and JSON output', () => {
   const json = runCli(['fixtures/write-request.json', '--format', 'json']);
   assert.equal(json.status, 0);
   assert.equal(JSON.parse(json.stdout).actionClass, 'write');
+});
+
+test('cli preserves token boundaries and negated-action semantics', () => {
+  const cases = [
+    ['readonly-secretary-request.json', 'readonly'],
+    ['readonly-postpone-request.json', 'readonly'],
+    ['negated-destructive-request.json', 'readonly'],
+    ['negated-write-request.json', 'readonly']
+  ];
+  for (const [fixture, expected] of cases) {
+    const result = runCli([path.join('fixtures', fixture), '--format', 'json']);
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(JSON.parse(result.stdout).actionClass, expected, fixture);
+  }
 });
 
 test('cli rejects malformed argument combinations with concise diagnostics', () => {
