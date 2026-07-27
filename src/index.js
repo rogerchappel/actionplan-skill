@@ -34,28 +34,32 @@ function validateActionInput(input) {
 }
 
 function classifyIntent(input) {
-  const text = [input.request, input.intent, input.target].filter(Boolean).join(' ').toLowerCase()
+  const fields = [input.request, input.intent, input.target].filter(Boolean);
+  const tokenizedFields = fields.map((field) => field.toLowerCase()
     .replace(/\b(can|could|did|do|does|is|should|was|were|would)n['’]t\b/g, '$1 not')
-    .replace(/\bwon['’]t\b/g, 'will not');
-  const tokens = text.match(/[\p{L}\p{N}_]+|[,.;:!?]/gu) || [];
+    .replace(/\bwon['’]t\b/g, 'will not')
+    .match(/[\p{L}\p{N}_]+|[,.;:!?]/gu) || []);
 
-  if (input.credentials || tokens.some((token) => BLOCKED_TERMS.has(token))) return 'blocked';
+  if (input.credentials || tokenizedFields.some((tokens) => tokens.some((token) => BLOCKED_TERMS.has(token)))) {
+    return 'blocked';
+  }
 
-  let negated = false;
   let actionClass = 'readonly';
-  for (const token of tokens) {
-    if (CLAUSE_BOUNDARIES.has(token)) {
-      negated = false;
-    } else if (NEGATIONS.has(token)) {
-      negated = true;
-    } else if (!negated && DESTRUCTIVE_TERMS.has(token)) {
-      return 'destructive';
-    } else if (!negated && WRITE_TERMS.has(token)) {
-      actionClass = 'write';
+  for (const tokens of tokenizedFields) {
+    let negated = false;
+    for (const token of tokens) {
+      if (CLAUSE_BOUNDARIES.has(token)) {
+        negated = false;
+      } else if (NEGATIONS.has(token)) {
+        negated = true;
+      } else if (!negated && DESTRUCTIVE_TERMS.has(token)) {
+        return 'destructive';
+      } else if (!negated && WRITE_TERMS.has(token)) {
+        actionClass = 'write';
+      }
     }
   }
-  if (actionClass === 'write') return 'write';
-  return 'readonly';
+  return actionClass;
 }
 
 function planAction(input) {
