@@ -33,6 +33,21 @@ test('intent classification uses whole tokens and respects explicit negation', (
   }
 });
 
+test('intent classification treats input fields as distinct clauses', () => {
+  const cases = [
+    [{ request: 'Do not delete the draft', intent: 'send the approved version' }, 'write', 'operator approval'],
+    [{ request: 'Do not send the draft', intent: 'delete the rejected version' }, 'destructive', 'explicit owner approval'],
+    [{ request: 'Do not delete the draft' }, 'readonly', 'none'],
+    [{ request: 'Do not delete the draft', intent: 'Never send it' }, 'readonly', 'none']
+  ];
+  for (const [input, expectedClass, expectedApproval] of cases) {
+    assert.equal(classifyIntent(input), expectedClass);
+    const plan = planAction(input);
+    assert.equal(plan.actionClass, expectedClass);
+    assert.equal(plan.approval, expectedApproval);
+  }
+});
+
 function runCli(args) {
   return spawnSync(process.execPath, ['bin/actionplan-skill.js', ...args], { encoding: 'utf8' });
 }
@@ -62,7 +77,9 @@ test('cli preserves token boundaries and negated-action semantics', () => {
     ['readonly-secretary-request.json', 'readonly'],
     ['readonly-postpone-request.json', 'readonly'],
     ['negated-destructive-request.json', 'readonly'],
-    ['negated-write-request.json', 'readonly']
+    ['negated-write-request.json', 'readonly'],
+    ['cross-field-write-request.json', 'write'],
+    ['cross-field-destructive-request.json', 'destructive']
   ];
   for (const [fixture, expected] of cases) {
     const result = runCli([path.join('fixtures', fixture), '--format', 'json']);

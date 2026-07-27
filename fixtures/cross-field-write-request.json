@@ -1,0 +1,5 @@
+{
+  "request": "Do not delete the draft",
+  "intent": "send the approved version",
+  "target": "email"
+}

@@ -1,0 +1,5 @@
+{
+  "request": "Do not send the draft",
+  "intent": "delete the rejected version",
+  "target": "document store"
+}
