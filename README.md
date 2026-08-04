@@ -40,10 +40,11 @@ For example, `secretary` does not match `secret`, and `postpone` does not match
 `post`.
 
 An explicit `no`, `not`, `never`, or `without` suppresses write and destructive
-action words through the rest of that clause. Punctuation or a contrast/sequence
-word such as `but`, `however`, `instead`, or `then` begins a new clause, so
-`Do not delete the draft; send the approved version` is still classified as a
-write. Each input field also starts a new clause: negation in `request` does not
+action words through the rest of that clause. Punctuation or a coordinating,
+contrast, or sequence word such as `and`, `but`, `however`, `instead`, or `then`
+begins a new clause, so `Do not delete the draft and send the approved version`
+is still classified as a write. Each input field also starts a new clause:
+negation in `request` does not
 suppress a positive action in `intent` or `target`. A request containing a
 credential term remains blocked even when that term is negated, because the tool
 does not accept credential-bearing requests. Ambiguous requests with only
