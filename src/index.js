@@ -11,7 +11,7 @@ const BLOCKED_TERMS = new Set(['password', 'secret', 'token', 'credential', 'cre
 const DESTRUCTIVE_TERMS = new Set(['delete', 'destroy', 'remove', 'wipe', 'refund', 'charge']);
 const WRITE_TERMS = new Set(['send', 'post', 'update', 'create', 'write', 'draft', 'comment']);
 const NEGATIONS = new Set(['no', 'not', 'never', 'without']);
-const CLAUSE_BOUNDARIES = new Set([',', '.', ';', ':', '!', '?', 'but', 'however', 'instead', 'then']);
+const CLAUSE_BOUNDARIES = new Set([',', '.', ';', ':', '!', '?', 'and', 'but', 'however', 'instead', 'then']);
 
 function validateActionInput(input) {
   if (input === null || Array.isArray(input) || typeof input !== 'object') {
