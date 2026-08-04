@@ -25,6 +25,8 @@ test('intent classification uses whole tokens and respects explicit negation', (
     [{ request: 'Postpone the meeting' }, 'readonly'],
     [{ request: 'Do not delete the saved draft' }, 'readonly'],
     [{ request: 'Never post the private update' }, 'readonly'],
+    [{ request: 'Do not delete the saved draft and send the approved version' }, 'write'],
+    [{ request: 'Do not send the draft and delete the rejected version' }, 'destructive'],
     [{ request: 'Do not delete the draft; send the approved version' }, 'write'],
     [{ request: 'Send the note without a password', credentials: true }, 'blocked']
   ];
@@ -78,6 +80,7 @@ test('cli preserves token boundaries and negated-action semantics', () => {
     ['readonly-postpone-request.json', 'readonly'],
     ['negated-destructive-request.json', 'readonly'],
     ['negated-write-request.json', 'readonly'],
+    ['conjunction-write-request.json', 'write'],
     ['cross-field-write-request.json', 'write'],
     ['cross-field-destructive-request.json', 'destructive']
   ];
