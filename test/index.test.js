@@ -110,6 +110,24 @@ test('cli preserves token boundaries and negated-action semantics', () => {
   }
 });
 
+test('cli requires approval for external side effects unless explicitly negated', () => {
+  const cases = [
+    ['publish-request.json', 'write', 'operator approval'],
+    ['merge-request.json', 'write', 'operator approval'],
+    ['deploy-request.json', 'write', 'operator approval'],
+    ['negated-publish-request.json', 'readonly', 'none'],
+    ['negated-merge-request.json', 'readonly', 'none'],
+    ['negated-deploy-request.json', 'readonly', 'none']
+  ];
+  for (const [fixture, expectedClass, expectedApproval] of cases) {
+    const result = runCli([path.join('fixtures', fixture), '--format', 'json']);
+    assert.equal(result.status, 0, result.stderr);
+    const plan = JSON.parse(result.stdout);
+    assert.equal(plan.actionClass, expectedClass, fixture);
+    assert.equal(plan.approval, expectedApproval, fixture);
+  }
+});
+
 test('cli rejects malformed argument combinations with concise diagnostics', () => {
   const cases = [
     { args: [], diagnostic: /missing input file/ },
