@@ -35,6 +35,25 @@ test('intent classification uses whole tokens and respects explicit negation', (
   }
 });
 
+test('intent classification requires approval for common external side effects', () => {
+  const cases = [
+    [{ request: 'Publish the approved release' }, 'write', 'operator approval'],
+    [{ request: 'Merge the approved pull request' }, 'write', 'operator approval'],
+    [{ request: 'Deploy the approved build' }, 'write', 'operator approval'],
+    [{ request: 'Do not publish the release' }, 'readonly', 'none'],
+    [{ request: 'Never merge the pull request' }, 'readonly', 'none'],
+    [{ request: 'Deploy without publishing the draft release' }, 'write', 'operator approval'],
+    [{ request: 'Do not deploy the build; publish the release' }, 'write', 'operator approval'],
+    [{ request: 'Do not merge this', intent: 'deploy the approved build' }, 'write', 'operator approval'],
+    [{ request: 'Review the deployment plan' }, 'readonly', 'none'],
+    [{ request: 'Inspect the publisher settings' }, 'readonly', 'none']
+  ];
+  for (const [input, expectedClass, expectedApproval] of cases) {
+    assert.equal(classifyIntent(input), expectedClass, input.request);
+    assert.equal(planAction(input).approval, expectedApproval, input.request);
+  }
+});
+
 test('intent classification treats input fields as distinct clauses', () => {
   const cases = [
     [{ request: 'Do not delete the draft', intent: 'send the approved version' }, 'write', 'operator approval'],
@@ -88,6 +107,24 @@ test('cli preserves token boundaries and negated-action semantics', () => {
     const result = runCli([path.join('fixtures', fixture), '--format', 'json']);
     assert.equal(result.status, 0, result.stderr);
     assert.equal(JSON.parse(result.stdout).actionClass, expected, fixture);
+  }
+});
+
+test('cli requires approval for external side effects unless explicitly negated', () => {
+  const cases = [
+    ['publish-request.json', 'write', 'operator approval'],
+    ['merge-request.json', 'write', 'operator approval'],
+    ['deploy-request.json', 'write', 'operator approval'],
+    ['negated-publish-request.json', 'readonly', 'none'],
+    ['negated-merge-request.json', 'readonly', 'none'],
+    ['negated-deploy-request.json', 'readonly', 'none']
+  ];
+  for (const [fixture, expectedClass, expectedApproval] of cases) {
+    const result = runCli([path.join('fixtures', fixture), '--format', 'json']);
+    assert.equal(result.status, 0, result.stderr);
+    const plan = JSON.parse(result.stdout);
+    assert.equal(plan.actionClass, expectedClass, fixture);
+    assert.equal(plan.approval, expectedApproval, fixture);
   }
 });
 

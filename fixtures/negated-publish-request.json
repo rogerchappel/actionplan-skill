@@ -1,0 +1,4 @@
+{
+  "request": "Do not publish the release",
+  "target": "release registry"
+}

@@ -1,0 +1,4 @@
+{
+  "request": "Deploy the approved build",
+  "target": "production environment"
+}
