@@ -9,7 +9,10 @@ const STRING_FIELDS = ['request', 'intent', 'target'];
 const STRING_ARRAY_FIELDS = ['tools', 'evidence', 'approvals'];
 const BLOCKED_TERMS = new Set(['password', 'secret', 'token', 'credential', 'credentials']);
 const DESTRUCTIVE_TERMS = new Set(['delete', 'destroy', 'remove', 'wipe', 'refund', 'charge']);
-const WRITE_TERMS = new Set(['send', 'post', 'update', 'create', 'write', 'draft', 'comment']);
+const WRITE_TERMS = new Set([
+  'send', 'post', 'update', 'create', 'write', 'draft', 'comment',
+  'publish', 'merge', 'deploy'
+]);
 const NEGATIONS = new Set(['no', 'not', 'never', 'without']);
 const CLAUSE_BOUNDARIES = new Set([',', '.', ';', ':', '!', '?', 'and', 'but', 'however', 'instead', 'then']);
 
