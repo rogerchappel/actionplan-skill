@@ -51,6 +51,20 @@ does not accept credential-bearing requests. Ambiguous requests with only
 negated actions resolve conservatively to `readonly`; the generated plan remains
 a dry run and does not execute anything.
 
+The supported action vocabulary is intentionally small and explicit:
+
+- `write` (operator approval): `send`, `post`, `update`, `create`, `write`,
+  `draft`, `comment`, `publish`, `merge`, and `deploy`.
+- `destructive` (explicit owner approval): `delete`, `destroy`, `remove`,
+  `wipe`, `refund`, and `charge`.
+- `blocked`: `password`, `secret`, `token`, `credential`, and `credentials`, or
+  an input whose `credentials` flag is `true`.
+
+These are whole-token matches, not stemming or semantic inference: for example,
+`deployment` does not match `deploy`, and unlisted action verbs default to
+`readonly`. Callers should treat that fallback as an unresolved classification
+when the request may affect an external system and require separate review.
+
 ## Verification
 
 Run the full release gate before opening a release PR:
