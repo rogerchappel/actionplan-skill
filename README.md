@@ -25,7 +25,15 @@ The CLI reads action request JSON and prints a dry-run action plan. It never cal
 It accepts exactly one input file and at most one `--format` option. Input fields
 `request`, `intent`, and `target` must be strings; `tools`, `evidence`, and
 `approvals` must be arrays of strings; and `credentials`, when present, must be
-a boolean.
+a boolean. `approvals` contains requirements supplied by the caller; it does
+not override or lower the approval tier derived from the request.
+
+Plans report these concepts separately. `minimumApproval` is the classifier's
+minimum tier for the action class, while `callerApprovals` preserves the
+validated input `approvals` array in its original order. Both fields are always
+present in JSON and Markdown output; omitted input approvals produce an empty
+`callerApprovals` list. Callers must satisfy the derived minimum as well as any
+additional caller requirements.
 
 ## Library
 

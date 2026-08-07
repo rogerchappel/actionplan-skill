@@ -80,7 +80,18 @@ function planAction(input) {
     'Request the approval tier required for this action class.',
     'Execute only after approval in a separate run.'
   ];
-  return { title: input.request || 'Untitled action request', actionClass, approval: APPROVALS[actionClass], tools, evidence: Array.isArray(input.evidence) ? input.evidence : [], reversible: actionClass === 'readonly' || actionClass === 'write', blocked, stopConditions: blocked ? ['credentials-present', 'unsafe-external-write'] : ['missing-approval', 'missing-evidence', 'scope-change'], steps };
+  return {
+    title: input.request || 'Untitled action request',
+    actionClass,
+    minimumApproval: APPROVALS[actionClass],
+    callerApprovals: Array.isArray(input.approvals) ? input.approvals : [],
+    tools,
+    evidence: Array.isArray(input.evidence) ? input.evidence : [],
+    reversible: actionClass === 'readonly' || actionClass === 'write',
+    blocked,
+    stopConditions: blocked ? ['credentials-present', 'unsafe-external-write'] : ['missing-approval', 'missing-evidence', 'scope-change'],
+    steps
+  };
 }
 
 export { classifyIntent, planAction, validateActionInput };
