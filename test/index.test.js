@@ -11,12 +11,23 @@ function load(name) { return JSON.parse(fs.readFileSync(path.join('fixtures', na
 test('actionplan-skill produces stable fixture output', () => {
   const writePlan = planAction(load('write-request.json'));
   assert.equal(writePlan.actionClass, 'write');
-  assert.equal(writePlan.approval, 'operator approval');
+  assert.equal(writePlan.minimumApproval, 'operator approval');
+  assert.deepEqual(writePlan.callerApprovals, ['operator review']);
   assert.ok(writePlan.steps.some((step) => step.includes('dry-run')));
 
   const blockedPlan = planAction(load('blocked-request.json'));
   assert.equal(blockedPlan.blocked, true);
   assert.ok(blockedPlan.stopConditions.includes('credentials-present'));
+});
+
+test('plans preserve caller approval requirements without weakening the minimum tier', () => {
+  const destructivePlan = planAction(load('destructive-request.json'));
+  assert.equal(destructivePlan.minimumApproval, 'explicit owner approval');
+  assert.deepEqual(destructivePlan.callerApprovals, ['data owner', 'operator review']);
+
+  const writePlan = planAction(load('write-request.json'));
+  assert.equal(writePlan.minimumApproval, 'operator approval');
+  assert.deepEqual(writePlan.callerApprovals, ['operator review']);
 });
 
 test('intent classification uses whole tokens and respects explicit negation', () => {
@@ -50,7 +61,7 @@ test('intent classification requires approval for common external side effects',
   ];
   for (const [input, expectedClass, expectedApproval] of cases) {
     assert.equal(classifyIntent(input), expectedClass, input.request);
-    assert.equal(planAction(input).approval, expectedApproval, input.request);
+    assert.equal(planAction(input).minimumApproval, expectedApproval, input.request);
   }
 });
 
@@ -65,7 +76,7 @@ test('intent classification treats input fields as distinct clauses', () => {
     assert.equal(classifyIntent(input), expectedClass);
     const plan = planAction(input);
     assert.equal(plan.actionClass, expectedClass);
-    assert.equal(plan.approval, expectedApproval);
+    assert.equal(plan.minimumApproval, expectedApproval);
   }
 });
 
@@ -110,6 +121,21 @@ test('cli preserves token boundaries and negated-action semantics', () => {
   }
 });
 
+test('cli renders caller approvals and the derived minimum deterministically', () => {
+  const json = runCli(['fixtures/destructive-request.json', '--format', 'json']);
+  assert.equal(json.status, 0, json.stderr);
+  const plan = JSON.parse(json.stdout);
+  assert.equal(plan.minimumApproval, 'explicit owner approval');
+  assert.deepEqual(plan.callerApprovals, ['data owner', 'operator review']);
+  assert.ok(json.stdout.indexOf('"minimumApproval"') < json.stdout.indexOf('"callerApprovals"'));
+
+  const markdown = runCli(['fixtures/destructive-request.json', '--format', 'markdown']);
+  assert.equal(markdown.status, 0, markdown.stderr);
+  assert.match(markdown.stdout, /## Minimum Approval\nexplicit owner approval/);
+  assert.match(markdown.stdout, /## Caller Approvals\n- data owner\n- operator review/);
+  assert.ok(markdown.stdout.indexOf('## Minimum Approval') < markdown.stdout.indexOf('## Caller Approvals'));
+});
+
 test('cli requires approval for external side effects unless explicitly negated', () => {
   const cases = [
     ['publish-request.json', 'write', 'operator approval'],
@@ -124,7 +150,7 @@ test('cli requires approval for external side effects unless explicitly negated'
     assert.equal(result.status, 0, result.stderr);
     const plan = JSON.parse(result.stdout);
     assert.equal(plan.actionClass, expectedClass, fixture);
-    assert.equal(plan.approval, expectedApproval, fixture);
+    assert.equal(plan.minimumApproval, expectedApproval, fixture);
   }
 });
 
