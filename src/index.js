@@ -14,7 +14,7 @@ const WRITE_TERMS = new Set([
   'publish', 'merge', 'deploy'
 ]);
 const NEGATIONS = new Set(['no', 'not', 'never', 'without']);
-const CLAUSE_BOUNDARIES = new Set([',', '.', ';', ':', '!', '?', 'and', 'but', 'however', 'instead', 'then']);
+const CLAUSE_BOUNDARIES = new Set([',', '.', ';', ':', '!', '?', 'and', 'or', 'nor', 'but', 'however', 'instead', 'then']);
 
 function validateActionInput(input) {
   if (input === null || Array.isArray(input) || typeof input !== 'object') {
