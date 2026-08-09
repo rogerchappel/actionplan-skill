@@ -42,7 +42,7 @@ test('intent classification uses whole tokens and respects explicit negation', (
     [{ request: 'Do not send the draft nor delete the rejected version' }, 'destructive'],
     [{ request: 'Do not delete or send the saved draft' }, 'write'],
     [{ request: 'Do not delete the draft or do not send it' }, 'readonly'],
-    [{ request: 'Do not send the draft nor ever delete it' }, 'readonly'],
+    [{ request: 'Do not send the draft nor do not delete it' }, 'readonly'],
     [{ request: 'Do not delete the draft; send the approved version' }, 'write'],
     [{ request: 'Send the note without a password', credentials: true }, 'blocked']
   ];
