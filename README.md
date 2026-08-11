@@ -79,6 +79,9 @@ when the request may affect an external system and require separate review.
 
 ## Verification
 
+Actionplan Skill supports Node.js 18.0.0 and later. CI verifies the minimum
+runtime (18.0.0) and Node.js 22, the current release baseline.
+
 Run the full release gate before opening a release PR:
 
 ```bash
@@ -98,7 +101,8 @@ npm run smoke
 npm run package:smoke
 ```
 
-`npm run package:smoke` performs a dry-run pack and asserts that the tarball
+`npm run package:smoke` builds a tarball, installs it in a temporary directory,
+executes the installed CLI's `--version` path, and asserts that the tarball
 contains the CLI entrypoint, README, license, safety docs, changelog, skill
 instructions, release verification notes, and representative fixtures.
 
