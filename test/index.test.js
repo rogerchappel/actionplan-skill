@@ -180,9 +180,8 @@ test('cli rejects malformed argument combinations with concise diagnostics', () 
   }
 });
 
-test('cli rejects invalid decoded input shapes without stack traces', (context) => {
+test('cli rejects invalid decoded input shapes without stack traces', () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'actionplan-skill-test-'));
-  context.after(() => fs.rmSync(directory, { recursive: true, force: true }));
   const cases = [
     ['null', /input must be a JSON object/],
     ['[]', /input must be a JSON object/],
@@ -190,12 +189,16 @@ test('cli rejects invalid decoded input shapes without stack traces', (context) 
     ['{"tools":["gh",42]}', /tools must be an array of strings/],
     ['{"credentials":"yes"}', /credentials must be a boolean/]
   ];
-  for (const [index, [contents, diagnostic]] of cases.entries()) {
-    const file = path.join(directory, index + '.json');
-    fs.writeFileSync(file, contents);
-    const result = runCli([file]);
-    assert.notEqual(result.status, 0);
-    assert.match(result.stderr, diagnostic);
-    assert.doesNotMatch(result.stderr, /\n\s+at /);
+  try {
+    for (const [index, [contents, diagnostic]] of cases.entries()) {
+      const file = path.join(directory, index + '.json');
+      fs.writeFileSync(file, contents);
+      const result = runCli([file]);
+      assert.notEqual(result.status, 0);
+      assert.match(result.stderr, diagnostic);
+      assert.doesNotMatch(result.stderr, /\n\s+at /);
+    }
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
   }
 });
