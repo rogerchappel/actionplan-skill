@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Normalized `can't`, `cannot`, and `shan't` so their action terms remain
+  negated during library and CLI intent classification.
 - Raised the supported Node.js minimum to 18.1.0, the first release that can
   execute the `node --test` command used by the release gate, and added a check
   that keeps the package declaration aligned with CI.

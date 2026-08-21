@@ -51,6 +51,19 @@ test('intent classification uses whole tokens and respects explicit negation', (
   }
 });
 
+test('intent classification normalizes irregular and uncontracted negative forms', () => {
+  const cases = [
+    ["I can't delete the draft", 'readonly'],
+    ['I cannot delete the draft', 'readonly'],
+    ["I shan't publish the release", 'readonly'],
+    ['I can delete the draft', 'destructive'],
+    ['I shall publish the release', 'write']
+  ];
+  for (const [request, expected] of cases) {
+    assert.equal(classifyIntent({ request }), expected, request);
+  }
+});
+
 test('intent classification requires approval for common external side effects', () => {
   const cases = [
     [{ request: 'Publish the approved release' }, 'write', 'operator approval'],
@@ -125,6 +138,28 @@ test('cli preserves token boundaries and negated-action semantics', () => {
     const result = runCli([path.join('fixtures', fixture), '--format', 'json']);
     assert.equal(result.status, 0, result.stderr);
     assert.equal(JSON.parse(result.stdout).actionClass, expected, fixture);
+  }
+});
+
+test('cli normalizes irregular and uncontracted negative forms', () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'actionplan-skill-negation-'));
+  const cases = [
+    ["I can't delete the draft", 'readonly'],
+    ['I cannot delete the draft', 'readonly'],
+    ["I shan't publish the release", 'readonly'],
+    ['I can delete the draft', 'destructive'],
+    ['I shall publish the release', 'write']
+  ];
+  try {
+    for (const [index, [request, expected]] of cases.entries()) {
+      const file = path.join(directory, index + '.json');
+      fs.writeFileSync(file, JSON.stringify({ request }));
+      const result = runCli([file, '--format', 'json']);
+      assert.equal(result.status, 0, result.stderr);
+      assert.equal(JSON.parse(result.stdout).actionClass, expected, request);
+    }
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
   }
 });
 
