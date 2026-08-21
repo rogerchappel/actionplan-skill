@@ -47,6 +47,11 @@ contractions, and compares complete word tokens rather than substrings.
 For example, `secretary` does not match `secret`, and `postpone` does not match
 `post`.
 
+Supported negative forms are `can't`, `cannot`, `couldn't`, `didn't`, `don't`,
+`doesn't`, `isn't`, `shan't`, `shouldn't`, `wasn't`, `weren't`, `won't`, and
+`wouldn't`, including curly-apostrophe spellings of the contractions. Each is
+normalized to an explicit `not` before classification.
+
 An explicit `no`, `not`, `never`, or `without` suppresses write and destructive
 action words through the rest of that clause. Punctuation or a coordinating,
 alternative, contrast, or sequence word such as `and`, `or`, `nor`, `but`,
