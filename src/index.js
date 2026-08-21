@@ -39,6 +39,9 @@ function validateActionInput(input) {
 function classifyIntent(input) {
   const fields = [input.request, input.intent, input.target].filter(Boolean);
   const tokenizedFields = fields.map((field) => field.toLowerCase()
+    .replace(/\bcannot\b/g, 'can not')
+    .replace(/\bcan['’]t\b/g, 'can not')
+    .replace(/\bshan['’]t\b/g, 'shall not')
     .replace(/\b(can|could|did|do|does|is|should|was|were|would)n['’]t\b/g, '$1 not')
     .replace(/\bwon['’]t\b/g, 'will not')
     .match(/[\p{L}\p{N}_]+|[,.;:!?]/gu) || []);
