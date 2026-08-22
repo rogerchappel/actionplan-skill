@@ -53,9 +53,14 @@ function classifyIntent(input) {
   let actionClass = 'readonly';
   for (const tokens of tokenizedFields) {
     let negated = false;
+    let neitherNegation = false;
     for (const token of tokens) {
       if (CLAUSE_BOUNDARIES.has(token)) {
-        negated = false;
+        negated = token === 'nor' && neitherNegation;
+        if (token !== 'nor') neitherNegation = false;
+      } else if (token === 'neither') {
+        negated = true;
+        neitherNegation = true;
       } else if (NEGATIONS.has(token)) {
         negated = true;
       } else if (!negated && DESTRUCTIVE_TERMS.has(token)) {
