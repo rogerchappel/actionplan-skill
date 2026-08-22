@@ -60,7 +60,10 @@ begins a new clause, so `Do not delete the draft and send the approved version`
 and `Do not delete the draft or send the approved version` are still classified
 as writes. A new explicit negation applies to the alternative clause, so
 `Do not delete the draft or do not send it` is `readonly`. Each input field also
-starts a new clause:
+starts a new clause. The paired form `neither ... nor ...` keeps both coordinated
+action clauses negated, so `Neither delete the draft nor send it` is `readonly`;
+a later clause introduced by punctuation or another coordinator is evaluated
+independently:
 negation in `request` does not
 suppress a positive action in `intent` or `target`. A request containing a
 credential term remains blocked even when that term is negated, because the tool
