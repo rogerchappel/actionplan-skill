@@ -51,6 +51,19 @@ test('intent classification uses whole tokens and respects explicit negation', (
   }
 });
 
+test('intent classification preserves neither/nor negation across coordinated actions', () => {
+  const cases = [
+    [{ request: 'Neither delete the draft nor send it' }, 'readonly', 'none'],
+    [{ request: 'Neither publish nor deploy the release' }, 'readonly', 'none'],
+    [{ request: 'Neither delete nor send the draft, but publish the approved summary' }, 'write', 'operator approval'],
+    [{ request: 'Neither publish nor deploy the release; delete the obsolete draft' }, 'destructive', 'explicit owner approval']
+  ];
+  for (const [input, expectedClass, expectedApproval] of cases) {
+    assert.equal(classifyIntent(input), expectedClass, input.request);
+    assert.equal(planAction(input).minimumApproval, expectedApproval, input.request);
+  }
+});
+
 test('intent classification normalizes irregular and uncontracted negative forms', () => {
   const cases = [
     ["I can't delete the draft", 'readonly'],
@@ -131,6 +144,8 @@ test('cli preserves token boundaries and negated-action semantics', () => {
     ['conjunction-write-request.json', 'write'],
     ['alternative-write-request.json', 'write'],
     ['negated-alternatives-request.json', 'readonly'],
+    ['neither-nor-destructive-request.json', 'readonly'],
+    ['neither-nor-write-request.json', 'readonly'],
     ['cross-field-write-request.json', 'write'],
     ['cross-field-destructive-request.json', 'destructive']
   ];
