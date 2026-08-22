@@ -5,7 +5,7 @@ Thanks for improving `actionplan-skill`.
 ## Local Setup
 
 ```bash
-npm install
+npm ci
 npm run release:check
 ```
 

@@ -7,7 +7,7 @@ Actionplan Skill is a local-first agent skill package that converts a requested 
 ## Quickstart
 
 ```bash
-npm install
+npm ci
 npm run release:check
 node bin/actionplan-skill.js fixtures/write-request.json --format markdown
 ```
