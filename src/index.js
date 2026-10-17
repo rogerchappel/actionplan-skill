@@ -57,7 +57,9 @@ function classifyIntent(input) {
     for (const token of tokens) {
       if (CLAUSE_BOUNDARIES.has(token)) {
         negated = token === 'nor' && neitherNegation;
-        if (token !== 'nor') neitherNegation = false;
+        // Keep the paired marker through punctuation/coordinators between
+        // neither and nor (for example, 'neither delete, nor send').
+        if (token === 'nor' && neitherNegation) neitherNegation = false;
       } else if (token === 'neither') {
         negated = true;
         neitherNegation = true;
