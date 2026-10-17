@@ -54,6 +54,8 @@ test('intent classification uses whole tokens and respects explicit negation', (
 test('intent classification preserves neither/nor negation across coordinated actions', () => {
   const cases = [
     [{ request: 'Neither delete the draft nor send it' }, 'readonly', 'none'],
+    [{ request: 'Neither delete the draft, nor send it' }, 'readonly', 'none'],
+    [{ request: 'Neither delete the draft, and nor send it' }, 'readonly', 'none'],
     [{ request: 'Neither publish nor deploy the release' }, 'readonly', 'none'],
     [{ request: 'Neither delete nor send the draft, but publish the approved summary' }, 'write', 'operator approval'],
     [{ request: 'Neither publish nor deploy the release; delete the obsolete draft' }, 'destructive', 'explicit owner approval']
