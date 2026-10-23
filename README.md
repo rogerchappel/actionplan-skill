@@ -87,9 +87,9 @@ when the request may affect an external system and require separate review.
 
 ## Verification
 
-Actionplan Skill supports Node.js 18.1.0 and later. CI verifies the minimum
-runtime (18.1.0) and maintained Node.js LTS releases 20, 22, and 24. Node.js
-18.1.0 is the first release with the `node --test` command used by the release gate.
+Actionplan Skill supports Node.js 18.1.0 and later. CI verifies the Node.js 18 major line and maintained Node.js LTS releases 20,
+22, and 24. Node.js 18.1.0 is the minimum supported version because it introduced
+the `node --test` command used by the release gate.
 
 Run the full release gate before opening a release PR:
 

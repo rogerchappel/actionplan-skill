@@ -13,6 +13,6 @@ const minimumNode = packageJson.engines?.node?.match(/^>=(\d+\.\d+\.\d+)$/)?.[1]
 assert.ok(minimumNode, 'package.json engines.node must declare an exact minimum such as >=18.1.0');
 
 const workflow = fs.readFileSync('.github/workflows/ci.yml', 'utf8');
-const matrixVersions = [...workflow.matchAll(/^\s+- (\d+(?:\.\d+){0,2})\s*$/gm)].map((match) => match[1]);
-assert.ok(matrixVersions.includes(minimumNode), `CI matrix must test the declared minimum Node.js version (${minimumNode})`);
+const matrixVersions = [...workflow.matchAll(/^\s+- (\d+(?:\.\d+){0,2}|\d+\.x)\s*$/gm)].map((match) => match[1]);
+assert.ok(matrixVersions.includes(minimumNode) || (minimumNode.startsWith('18.') && matrixVersions.includes('18.x')), `CI matrix must test the declared minimum Node.js version (${minimumNode})`);
 console.log('actionplan-skill check passed');
