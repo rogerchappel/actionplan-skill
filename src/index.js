@@ -44,9 +44,9 @@ function classifyIntent(input) {
     .replace(/\bshan['’]t\b/g, 'shall not')
     .replace(/\b(could|did|do|does|is|should|was|were|would)n['’]t\b/g, '$1 not')
     .replace(/\bwon['’]t\b/g, 'will not')
-    .match(/[\p{L}\p{N}_]+|[,.;:!?]/gu) || []);
+    .match(/[\p{L}\p{N}_-]+|[,.;:!?]/gu) || []);
 
-  if (input.credentials || tokenizedFields.some((tokens) => tokens.some((token) => BLOCKED_TERMS.has(token)))) {
+  if (input.credentials || fields.some((field) => /\b(?:api|access)[-_\s]+key\b/i.test(field) && /\b(?:my|use|with|provide|enter|paste|supply)\b/i.test(field)) || tokenizedFields.some((tokens) => tokens.some((token) => BLOCKED_TERMS.has(token)))) {
     return 'blocked';
   }
 

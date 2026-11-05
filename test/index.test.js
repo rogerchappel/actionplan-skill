@@ -51,6 +51,20 @@ test('intent classification uses whole tokens and respects explicit negation', (
   }
 });
 
+test('credential-bearing API and access key variants are blocked without matching ordinary prose', () => {
+  for (const request of [
+    'Use my api-key to deploy',
+    'Use my API key to deploy',
+    'Use my access-key to deploy',
+    'Use my access key to deploy'
+  ]) {
+    assert.equal(classifyIntent({ request }), 'blocked', request);
+  }
+  for (const request of ['The API-key feature is documented', 'Access-key rotation is scheduled']) {
+    assert.equal(classifyIntent({ request }), 'readonly', request);
+  }
+});
+
 test('intent classification preserves neither/nor negation across coordinated actions', () => {
   const cases = [
     [{ request: 'Neither delete the draft nor send it' }, 'readonly', 'none'],
