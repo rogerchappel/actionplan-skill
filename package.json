@@ -10,6 +10,7 @@
     "bin",
     "src",
     "docs",
+    "docs/RELEASE_VERIFICATION.md",
     "fixtures",
     "SKILL.md",
     "README.md",
